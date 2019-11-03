@@ -1,0 +1,100 @@
+metadata:
+  title: Navigation bar
+  short title: Navigation
+  documentation: "https://docassemble.org/docs/initial.html#navigation bar"
+  example start: 1
+  example end: 15
+---
+include:
+  - Info_personnes_morales.yml
+  - Plans_vie_base_adherent.yml
+ 
+---
+sections:
+  - Introduction
+  - Personnes morales
+  - Plan vie de base adhérent
+  - Conclusion
+---
+features:
+  navigation: True
+  progress bar: True
+---
+
+
+---
+mandatory: True
+code: |
+  menu_items = [ action_menu_item('Roadmap', 'road_map') ]
+---
+initial: True
+code: |
+  if returning_user(minutes=0.5):
+    welcome_back
+---
+mandatory: True
+question: |
+  Bienvenu à l'interview
+subquestion: |
+  Cette interview vous permettra de recueillir les
+  informations requises à la configuration
+  d'un groupe.
+field: sees_nav_bar
+
+---
+mandatory: True
+question: |
+  ${person_morale}
+buttons:
+  - Continue : continue
+section: Personnes morales
+
+---
+mandatory: True
+question: |
+  Informations recueillies
+subquestion: |
+  Vous avez créé
+  ${ plans.number() } plan(s).
+  
+  % for p in plans:
+  Voici un résumé de chaque plan ${ p }. 
+    % for c in p.protections:
+    Protections : ${c}
+    % endfor
+  % endfor
+section: Plans vie de base adhérent
+
+---
+progress: 100
+mandatory: True
+question: Thank you.
+subquestion: |
+  ${ person_morale },
+  Your answers mean a lot to me.
+  
+section: Conclusion
+---
+event: welcome_back
+question: |
+  Bienvenu à nouveau!
+subquestion: |
+  Vous êtes présentement à la
+  **${ nav.get_section(display=True) }**
+  section.
+  ${ nav }
+  Cliquez sur "Continuer" pour reprendre là
+  où vous avez laissé.
+buttons:
+  Continuer: continue
+---
+event: road_map
+question: |
+  Roadmap
+subquestion: |
+  Vous êtes présentement à la section
+  **${ nav.get_section(display=True) }**.
+  ${ nav }
+  Cliquez sur "Continuer" pour reprendre l'interview.
+buttons:
+  Continuer: continue
