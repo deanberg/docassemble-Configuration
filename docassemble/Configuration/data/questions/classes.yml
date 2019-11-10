@@ -1,0 +1,85 @@
+objects:
+  - classe: DAList.using(object_type=Individual, complete_attribute='complete')
+
+---
+
+code: |
+  classe[i].name.first
+  classe[i].complete=True
+  classe_questions=True
+
+
+---
+question: |
+  Voulez-vous définir une nouvelle classe?
+yesno: classe.there_are_any
+---
+question: |
+  Nom de la classe
+fields:
+  - Nom: classe[i].name.first
+
+---
+question: |
+  Voulez-vous définir une nouvelle classe?
+yesno: classe.there_is_another
+---
+need: classe.table
+mandatory: true
+question: |
+  Merci pour vos réponses!
+subquestion: |
+  Les classes sont ${ classe }.
+
+  Vous pouvez
+  [modifier vos réponses](${ url_action('review_interview') })
+  si vous le désirez.
+buttons:
+  - continue
+---
+event: review_interview
+question: |
+  Modifier les classes
+review:
+  - note: |
+      % if len(classe):
+      Les classes sont:
+
+      ${ classe.table }
+
+      ${ classe.add_action() }
+      % else:
+      Aucune classe n'est définie.
+
+      ${ classe.add_action(message="Je souhaite en ajouter une.") }
+      % endif
+---
+table: classe.table
+rows: classe
+columns:
+  - Name: |
+      row_item.name.full()
+  # - Fruit: |
+  #     row_item.favorite_fruit
+edit:
+  - name.first
+  # - favorite_fruit
+# mandatory: True
+# question: |
+#   Vous avez terminé la définition des classes
+# subquestion: |
+#   Vos classes sont ${ classe }.
+#
+#
+#   ${ classe.table }
+#
+#   ${ classe.add_action() }
+# ---
+# table: classe.table
+# rows: classe
+# columns:
+#   - Name: |
+#       row_item.name.full()
+#
+# edit:
+#   - name.first

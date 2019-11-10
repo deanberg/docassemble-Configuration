@@ -1,0 +1,100 @@
+metadata:
+  title: Info_personnes_morales
+  short title: Personnes morales
+  documentation: "https://docassemble.org/docs/groups.html#editing"
+  example start: 7
+  example end: 9
+---
+objects:
+  - person_morale: DAList.using(object_type=Individual,
+                         complete_attribute='complete')
+
+---
+code: |
+  person_morale[i].name.first = person_morale[i].name.first.upper()
+  person_morale[i].numero_civique
+  person_morale[i].nom_rue = person_morale[i].nom_rue.upper()
+  person_morale[i].ville = person_morale[i].ville.upper()
+  person_morale[i].province = person_morale[i].province.upper()
+  person_morale[i].code_postal = person_morale[i].code_postal.upper()
+  
+  person_morale[i].complete = True
+  person_morale_questions=True
+---
+question: |
+  Voulez-vous définir une nouvelle personne morale?
+yesno: person_morale.there_are_any
+---
+question: |
+  Collecte des éléments principaux sur la personne morale no. ${ i+1 } ?
+fields:
+  - Nom: person_morale[i].name.first
+    help: |
+      Note : si il y a 2 preneurs pour un même contrat,
+      inscrire les nom des 2 personnes morales.
+    hint: |
+      e.g. ABC inc. (max. 48 caract.)
+
+  - Numéro preneur-employeur: person_morale[i].numero_preneur_employeur
+    help: |
+      Note : employeur : 6 caract. '-' preneur: 4 caract.
+    hint: |
+      e.g. ######-####
+    minlength: 11
+    maxlength: 11
+    validation messages:
+      maxlength: |
+        Vérifiez l'entrée trop long!
+      required: |
+        Le format doit être "######-####'.
+
+
+  - Province du siège social: person_morale[i].etat_siege
+    choices:
+      - QC
+      - AB
+      - MB
+    default: 'QC'
+
+  - Niveau de confidentialité: person_morale[i].niveau_confidentialite
+    choices:
+      - Non confidentiel
+      - Confidentiel
+    default: 'Non confidentiel'
+    
+  - Liaison employeur: person_morale[i].liaison_employeur
+    datatype: yesno
+    default: True
+---
+
+question: |
+  Collecte des coordonnées de la personne morale ${person_morale[i].name.first}
+
+fields:  
+ - Numéro civique: person_morale[i].numero_civique
+ - Rue: person_morale[i].nom_rue
+ - Ville: person_morale[i].ville
+ - Province: person_morale[i].province
+ - Code postal: person_morale[i].code_postal
+ - Pays: person_morale[i].pays
+   default: CANADA
+ - Téléphone : person_morale[i].telephone
+ - E-mail : person_morale[i].email
+   datatype: email
+
+
+---
+question: |
+  Voulez-vous ajouter une autre personne morale?
+yesno: person_morale.there_is_another
+---
+# Pour lier le fichier au fichier central Navigation, on doit enlever le #
+# devant le mandatory
+mandatory: True
+question: |
+  Les personnes morales:
+  %for p in person_morale:
+  ${ p }
+  %endfor
+buttons:
+  - continue
