@@ -66,6 +66,11 @@ fields:
     datatype: yesno
     default: no
     show if : plans[i].protection_individuelle
+
+
+
+
+
   - Protection familiale: plans[i].protection_familiale
     datatype: yesno
     default: True
@@ -83,7 +88,7 @@ fields:
     datatype: currency
     show if : plans[i].protection_couple
 ---
-
+#Pour intégrer cette partie à NAVIGATION, on doit mettre des # devant ce bloc
 #mandatory: True
 #question: |
 #  Information retrieved
@@ -97,3 +102,6 @@ fields:
 #    Protections : ${c}
 #    % endfor
 #  % endfor
+  
+#buttons:
+#  - continue

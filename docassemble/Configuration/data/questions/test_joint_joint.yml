@@ -1,0 +1,154 @@
+metadata:
+  title: Nested loop
+  documentation: "https://docassemble.org/docs/groups.html"
+  example start: 1
+  example end: 13
+---
+include:
+  - Plans_vie_base_adherent.yml
+  - classes.yml
+
+
+---
+objects:
+  - person: |
+      DAList.using(
+        object_type=Individual,
+        minimum_number=1,
+        complete_attribute='complete')
+  - person[i].child: |
+      DAList.using(
+        object_type=Individual,
+        complete_attribute='complete')
+  - person[i].child[j].grand_child: |
+      DAList.using(
+        object_type=Individual,
+        complete_attribute='complete')
+
+---
+code: |
+  person[i].name.first
+  person[i].name.last
+  person[i].allergy.gather()
+  person[i].child.gather()
+  person[i].complete = True
+---
+code: |
+  person[i].child[j].name.first
+  person[i].child[j].name.last
+  person[i].child[j].allergy.gather()
+  person[i].child[j].complete = True
+
+---
+code: |
+  person[i].child[j].grand_child[k].name.first
+  person[i].child[j].grand_child[k].name.last
+  person[i].child[j].grand_child[k].allergy.gather()
+  person[i].child[j].grand_child[k].complete = True
+---
+question: |
+  What is the name of the
+  ${ ordinal(i) }
+  person?
+fields:
+  - First: person[i].name.first
+  - Last: person[i].name.last
+---
+question: |
+  Is there another person?
+yesno: person.there_is_another
+---
+question: |
+  Does ${ person[i] } have any children?
+yesno: person[i].child.there_are_any
+---
+question: |
+  What is the name of
+  ${ person[i].possessive(ordinal(j) + ' child') }?
+fields:
+  - First: person[i].child[j].name.first
+    datatype: object_checkboxes
+    choices: classe
+  - Last: person[i].child[j].name.last
+---
+question: |
+  Does ${ person[i] } have any
+  children other than ${ person[i].child }?
+yesno: person[i].child.there_is_another
+
+
+---
+question: |
+  Does ${ person[i] } have any grand children?
+yesno: person[i].child[j].grand_child.there_are_any
+
+---
+question: |
+  What is the name of
+  ${ person[i].possessive(ordinal(j) + ' grand child') }?
+fields:
+  - First: person[i].child[j].grand_child[k].name.first
+    datatype: object_checkboxes
+    choices: plans
+  - Last: person[i].child[j].grand_child[k].name.last
+
+---
+question: |
+  Does ${ person[i] } have any
+  grand children other than ${ person[i].child[j].grand_child }?
+yesno: person[i].child[j].grand_child.there_is_another
+
+---
+generic object: Individual
+objects:
+  - x.allergy: DAList
+---
+generic object: Individual
+question: |
+  Does ${ x } have any allergies?
+yesno: x.allergy.there_are_any
+---
+generic object: Individual
+question: |
+  What allergy does ${ x } have?
+fields:
+  - Allergy: x.allergy[i]
+---
+generic object: Individual
+question: |
+  Does ${ x } have any allergies
+  other than ${ x.allergy }?
+yesno: x.allergy.there_is_another
+---
+mandatory: True
+question: |
+  ${person[0].name.first}
+  ${person[0].child[0].name.first}
+  ${person[0].child[0].grand_child[0].name.first}
+  
+#  ${person[0].child[0].name.first}
+#  ${person[0].child[0].grand_child[0].name.first}
+
+
+#  Information retrieved
+#subquestion: |
+#  You told me about
+#  ${ person.quantity_noun('individual') },
+#  their allergies, their children,
+#  and their children's allergies and grand children.
+#  % for p in person:
+#  You told me about ${ p }.
+#    % if p.allergy.number() > 0:
+#  ${ p } is allergic to ${ p.allergy }.
+#    % endif
+#    % for c in p.child:
+#  ${ p } has a child named ${ c }.
+#    % if c.allergy.number() > 0:
+#  ${ c } is allergic to ${ c.allergy }.
+#    % endif
+#      % for g in c.grand_child:
+#      ${c}
+#      % endfor
+#    % endfor
+ 
+#  % endfor
