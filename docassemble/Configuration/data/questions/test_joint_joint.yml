@@ -121,6 +121,10 @@ question: |
 yesno: x.allergy.there_is_another
 ---
 mandatory: True
+need:
+  - person_morale
+
+
 question: |
   ${person[0].name.first}
   ${person[0].child[0].name.first}

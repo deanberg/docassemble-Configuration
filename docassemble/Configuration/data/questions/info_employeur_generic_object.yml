@@ -1,0 +1,218 @@
+metadata:
+  title: info_employeur_generic_object
+  documentation: "https://docassemble.org/docs/groups.html"
+  example start: 1
+  example end: 13
+
+
+---
+objects:
+  - employeur: |
+      DAList.using(
+        object_type=Organization,
+        there_are_any=True,complete_attribute="complete")
+
+  - plan_vie_base: |
+      DAList.using(
+        object_type=Organization,
+        there_are_any=True,complete_attribute="complete")
+  
+  - plan_vie_base[i].protection: |
+      DAList.using(
+        object_type=Organization,
+        there_are_any=True,complete_attribute="complete")  
+
+  - plan_vie_base[i].protection[j].reduction: |
+      DAList.using(
+        object_type=Organization)       
+---
+code: |
+  employeur[i].name.text
+  employeur[i].classe.gather()
+  employeur[i].complete = True
+---
+code: |
+  plan_vie_base[i].name.text
+  plan_vie_base[i].protection.gather()
+  plan_vie_base[i].complete = True
+---
+code: |
+  plan_vie_base[i].protection[j].name.text
+  plan_vie_base[i].protection[j].reduction.gather()
+  plan_vie_base[i].protection[j].complete = True
+---
+mandatory: True
+question: |
+  Les employeurs sont:
+subquestion: |
+  % for yeur in employeur:
+  * ${ yeur }
+     % if yeur.classe.number() > 0:
+        ${ yeur } a les classes ${ yeur.classe }.
+    % endif
+  % endfor
+  
+buttons:
+  - continue
+---
+mandatory: True
+question: |
+  Définition des employeurs et classes complétée!
+subquestion: |
+  
+  ${ employeur.table }
+  
+  ${ employeur.add_action() }
+
+buttons:
+  - continue
+---
+table: employeur.table
+rows: employeur
+columns:
+  - Nom: |
+      row_item.name.text
+  - Classe: |
+      row_item.classe
+edit:
+  - name.text
+  - employeur.classe
+---
+question: |
+  Quel est le nom de l'employeur no. 
+  ${ i + 1 } ?
+fields:
+  - Nom: employeur[i].name.text
+---
+question: |
+  Voulez-vous ajouter un employeur à la liste?
+yesno: employeur.there_is_another
+---
+generic object: Organization
+objects:
+  - x.classe: DAList.using(there_are_any=True)
+
+---
+generic object: Organization
+question: |
+  Quelle est la classe de ${ x } ?
+fields:
+  - Classe: x.classe[i]
+---
+generic object: Organization
+question: |
+  Est-ce que ${ x } possède une classes
+  autre que ${ x.classe }?
+yesno: x.classe.there_is_another
+---
+mandatory: True
+question: |
+  Les plans vie de l'adhérent sont:
+subquestion: |
+  % for plan in plan_vie_base:
+  * ${ plan }
+     % if plan.protection.number() > 0:
+        ${ plan } a les protections ${ plan.protection }.
+         
+    % endif
+  % endfor
+  
+
+buttons:
+  - continue
+---
+mandatory: True
+question: |
+  Définition des plans vie base adhérent complétée! Vous pouvez maintenant les réviser.
+subquestion: |
+  
+  ${ plan_vie_base.table }
+  
+  ${ plan_vie_base.add_action() }
+
+buttons:
+  - continue
+
+
+---
+table: plan_vie_base.table
+rows: plan_vie_base
+columns:
+  - Plan: |
+      row_item.name.text
+  - Protection: |
+      row_item.protection
+edit:
+  - name.text
+  - plan_vie_base.protection
+
+---
+question: |
+  Voulez-vous ajouter un plan vie de base de l'adhérent au régime?
+yesno: plan_vie_base.there_are_any
+---
+question: |
+  Quel est du plan vie de base adhérent no. 
+  ${ i + 1 } ?
+fields:
+  - Nom du plan: plan_vie_base[i].name.text
+
+---
+question: |
+  Voulez-vous ajouter un autre plan à la liste?
+yesno: plan_vie_base.there_is_another
+---
+generic object: Organization
+objects:
+  - x.protection: DAList.using(there_are_any=True)
+---
+generic object: Organization
+question: |
+  Quelle est la protection de ${ x } ?
+fields:
+  - Protection: x.protection[i].name.text
+    choices:
+      -  Individuel
+      -  Familial
+      -  Couple
+      -  Monoparental
+---
+generic object: Organization
+question: |
+  Est-ce que ${ x } possède une protection
+  autre que ${ x.protection }?
+yesno: x.protection.there_is_another
+
+---
+generic object: Organization
+objects:
+  - x.reduction: DAList
+---
+generic object: Organization
+question: |
+  Est-ce que la plan ${ x } possède une reduction
+  de protection?
+yesno: x.reduction.there_are_any
+---
+generic object: Organization
+question: |
+  Réduction de ${ x } ?
+fields:
+  - Reduction: x.reduction[i].name.text
+
+---
+generic object: Organization
+question: |
+  Est-ce que la plan ${ x } possède une reduction
+  autre que ${ x.reduction }?
+yesno: x.reduction.there_is_another
+---
+mandatory: True
+question: |
+  Interview dictionary
+subquestion: |
+  The variables in the dictionary are:
+    
+  `${ all_variables() }`
+buttons:
+- exit
