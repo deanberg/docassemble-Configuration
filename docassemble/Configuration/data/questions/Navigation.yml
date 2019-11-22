@@ -6,22 +6,18 @@ metadata:
   example end: 15
 ---
 include:
-  - Info_personnes_morales.yml
-  - Plans_vie_base_adherent.yml
+  - employeur_classe_plan2.yml
  
 ---
 sections:
   - Introduction
-  - Personnes morales
+  - Employeurs et classes
   - Plan vie de base adhérent
   - Conclusion
 ---
 features:
   navigation: True
   progress bar: True
----
-
-
 ---
 mandatory: True
 code: |
@@ -36,41 +32,41 @@ mandatory: True
 question: |
   Bienvenu à l'interview
 subquestion: |
-  Cette interview vous permettra de recueillir les
-  informations requises à la configuration
-  d'un groupe.
+  Cette interview vous permettra de saisir les
+  informations requises pour configurer
+  un groupe.
 field: sees_nav_bar
 
 ---
 mandatory: True
 question: |
-  ${person_morale}
+  ${person}
 buttons:
   - Continue : continue
-section: Personnes morales
+section: Employeurs et classes
 
 ---
-mandatory: True
-question: |
-  Informations recueillies
-subquestion: |
-  Vous avez créé
-  ${ plans.number() } plan(s).
+#mandatory: True
+#question: |
+#  Informations recueillies
+#subquestion: |
+#  Vous avez créé
+#  ${ plans.number() } plan(s).
   
-  % for p in plans:
-  Voici un résumé de chaque plan ${ p }. 
-    % for c in p.protections:
-    Protections : ${c}
-    % endfor
-  % endfor
-section: Plans vie de base adhérent
+#  % for p in plans:
+#  Voici un résumé de chaque plan ${ p }. 
+#    % for c in p.protections:
+#    Protections : ${c}
+#    % endfor
+#  % endfor
+#section: Plans vie de base adhérent
 
 ---
 progress: 100
 mandatory: True
 question: Thank you.
 subquestion: |
-  ${ person_morale },
+  ${ person},
   Your answers mean a lot to me.
   
 section: Conclusion
